@@ -13,5 +13,23 @@ async function getGiphyPromise(text) {
 const button = document.querySelector("button")
 button.addEventListener("click", () => {
   const location = document.querySelector('#location').value
-  getWeatherPromise(location).then(a => {console.log(a)})
+  if (location != '') {
+    const div = document.querySelector("div")
+    getWeatherPromise(location).then(data => {
+    if (div.firstChild) {
+      console.log(div.firstChild)
+      const h2 = document.querySelector("h2")
+      h2.textContent = 'Temparature in celsius ' + data.temp_c
+      const img = document.querySelector("img")
+      getGiphyPromise(data.text).then(url => {img.src = url})
+    } else {
+      const h2 = document.createElement("h2")
+      h2.textContent = 'Temparature in celsius ' + data.temp_c
+      const img = document.createElement("img")
+      getGiphyPromise(data.text).then(url => {img.src = url})
+      div.appendChild(h2)
+      div.appendChild(img)
+    }
+  })
+}
 })
