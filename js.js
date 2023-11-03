@@ -1,5 +1,8 @@
 async function getWeatherPromise(location) {
-  const response = await fetch('https://api.weatherapi.com/v1/current.json?key=7dcc585f30c04aaeab9154430233010&q=' + location, {mode: 'cors'})
+  let response = null
+  response = await fetch('https://api.weatherapi.com/v1/current.json?key=7dcc585f30c04aaeab9154430233010&q=' + location, {mode: 'cors'})
+  if (response.status != 200)
+    return null
   const data = await response.json()
   return {text: data.current.condition.text, temp_c: data.current.temp_c}
 }
@@ -17,16 +20,25 @@ button.addEventListener("click", () => {
     const div = document.querySelector("div")
     getWeatherPromise(location).then(data => {
     if (div.firstChild) {
-      console.log(div.firstChild)
       const h2 = document.querySelector("h2")
-      h2.textContent = 'Temparature in celsius ' + data.temp_c
       const img = document.querySelector("img")
-      getGiphyPromise(data.text).then(url => {img.src = url})
+      if (data) {
+        h2.textContent = 'Temparature in celsius ' + data.temp_c
+        getGiphyPromise(data.text).then(url => {img.src = url})
+      } else {
+        h2.textContent = 'Location not found'
+        img.src = "https://www.publicdomainpictures.net/pictures/250000/nahled/erorr.jpg"
+      }
     } else {
       const h2 = document.createElement("h2")
-      h2.textContent = 'Temparature in celsius ' + data.temp_c
       const img = document.createElement("img")
-      getGiphyPromise(data.text).then(url => {img.src = url})
+      if (data) {
+        h2.textContent = 'Temparature in celsius ' + data.temp_c
+        getGiphyPromise(data.text).then(url => {img.src = url})
+      } else {
+        h2.textContent = 'Location not found'
+        img.src = 'https://www.publicdomainpictures.net/pictures/250000/nahled/erorr.jpg'
+      }
       div.appendChild(h2)
       div.appendChild(img)
     }
